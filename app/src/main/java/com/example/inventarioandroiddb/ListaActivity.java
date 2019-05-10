@@ -7,7 +7,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -29,9 +31,11 @@ public class ListaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista);
         myDB = new DataBaseHelper(this);
         Cursor cur = myDB.Lista();
-        TextView lblRegistrosCant = findViewById(R.id.lblCantidadRegistros);
-        String texto = lblRegistrosCant.getText().toString() + Integer.toString(cur.getCount())+ "  ";
-        lblRegistrosCant.setText(texto);
+/*        TextView lblRegistrosCant = findViewById(R.id.lblCantidadRegistros);
+        String texto = "Registros en total: " + Integer.toString(cur.getCount())+ "  ";
+        lblRegistrosCant.setText(texto);*/
+
+        ImageView btnEliminar = (ImageView) findViewById(R.id.btnEliminarItem);
 
             ListView lvItems = (ListView) findViewById(R.id.lvLista);
 
@@ -148,7 +152,6 @@ public class ListaActivity extends AppCompatActivity {
         setContentView(tablelayout);*/
 
     }
-
 
     public void ShowMensage(String titulo, String mensage)
     {

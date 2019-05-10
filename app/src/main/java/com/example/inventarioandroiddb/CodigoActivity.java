@@ -308,8 +308,20 @@ public class CodigoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         TextView lblCantidad = findViewById(R.id.lblTextCantidad);
         lblCantidad.setText(Integer.toString(myDB.CantidadTotalDeRegistros()));
         cantidad = myDB.CantidadTotalDeRegistros();
+
+        TextView lblCodigo = findViewById(R.id.lblTextUltimoCodigo);
+        String ultimocodigo = myDB.UltimoCodigoIngresado();
+        if(ultimocodigo!="")
+        {
+            lblCodigo.setText(myDB.UltimoCodigoIngresado());
+        }
+        else
+        {
+            lblCodigo.setText("-");
+        }
     }
 }
