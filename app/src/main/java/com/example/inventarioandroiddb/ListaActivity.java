@@ -6,12 +6,15 @@ import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.inventarioandroiddb.Clases.CursorAdaptador;
 import com.example.inventarioandroiddb.Clases.DataBaseHelper;
 
 public class ListaActivity extends AppCompatActivity {
@@ -21,9 +24,30 @@ public class ListaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try
+        {
         setContentView(R.layout.activity_lista);
-        myDB = new DataBaseHelper(getApplicationContext());
+        myDB = new DataBaseHelper(this);
         Cursor cur = myDB.Lista();
+        TextView lblRegistrosCant = findViewById(R.id.lblCantidadRegistros);
+        String texto = lblRegistrosCant.getText().toString() + Integer.toString(cur.getCount())+ "  ";
+        lblRegistrosCant.setText(texto);
+
+            ListView lvItems = (ListView) findViewById(R.id.lvLista);
+
+            CursorAdaptador todoAdapter = new CursorAdaptador(this, cur);
+
+            lvItems.setAdapter(todoAdapter);
+        }
+        catch(Exception ex)
+        {
+            ShowMensage("Error",ex.getMessage());
+        }
+
+
+/*         Switch to new cursor and update contents of ListView
+        todoAdapter.changeCursor(todoCursor);
+
 
         TableLayout tablelayout = new TableLayout(this);
         tablelayout.setVerticalScrollBarEnabled(true);
@@ -121,7 +145,7 @@ public class ListaActivity extends AppCompatActivity {
 
         }
 
-        setContentView(tablelayout);
+        setContentView(tablelayout);*/
 
     }
 

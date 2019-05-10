@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF">
+
+        <TextView
+            android:id="@+id/lblModificarItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modificar Registro: "
+            android:textSize="30sp"
+            android:layout_centerHorizontal="true"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblModificarItem"
+            android:id="@+id/llModificarItem"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="40dp">
+            <TextView
+                android:id="@+id/lblCantidadItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantidad: "
+                android:textSize="30sp" />
+            <EditText
+                android:id="@+id/txtModificarItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblCantidadItem"
+                android:layout_toRightOf="@+id/lblCantidadItem"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llModificarItem"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="20dp">
+
+
+            <Button
+                android:id="@+id/btnAceptarModificar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Aceptar" />
+
+            <Button
+                android:id="@+id/btnCancelarModificar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:text="Cancelar" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

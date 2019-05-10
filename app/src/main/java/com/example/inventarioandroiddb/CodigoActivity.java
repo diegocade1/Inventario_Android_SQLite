@@ -50,10 +50,20 @@ public class CodigoActivity extends AppCompatActivity {
         lblUbicacion.setText(ubicacion);
 
         TextView lblCantidad = findViewById(R.id.lblTextCantidad);
-        lblCantidad.setText("0");
+        lblCantidad.setText(Integer.toString(myDB.CantidadTotalDeRegistros()));
+        cantidad = myDB.CantidadTotalDeRegistros();
 
         TextView lblCodigo = findViewById(R.id.lblTextUltimoCodigo);
-        lblCodigo.setText("-");
+        String ultimocodigo = myDB.UltimoCodigoIngresado();
+        if(ultimocodigo!="")
+        {
+            lblCodigo.setText(myDB.UltimoCodigoIngresado());
+        }
+        else
+        {
+            lblCodigo.setText("-");
+        }
+
 //-----------------------------------------------------------------
         EditText text = findViewById(R.id.txtCodigo);
         ActionKeyPressTextCodigo(text);
@@ -115,7 +125,14 @@ public class CodigoActivity extends AppCompatActivity {
                 ShowMensage("Lista",buffer.toString());
 */
 
-                startActivity(new Intent(CodigoActivity.this, ListaActivity.class));
+            try{
+                startActivityForResult(new Intent(CodigoActivity.this, ListaActivity.class),1);
+
+            }
+            catch (Exception ex)
+            {
+                ShowMensage("Error",ex.getMessage().toString());
+            }
             }
         });
     }
@@ -286,5 +303,13 @@ public class CodigoActivity extends AppCompatActivity {
         builder.setTitle(titulo);
         builder.setMessage(mensage);
         builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        TextView lblCantidad = findViewById(R.id.lblTextCantidad);
+        lblCantidad.setText(Integer.toString(myDB.CantidadTotalDeRegistros()));
+        cantidad = myDB.CantidadTotalDeRegistros();
     }
 }

@@ -88,7 +88,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 // Definir que columnas mostrar
 
         String[] projection = {
-                Columna_1,
+                "ID _id",
                 Columna_2,
                 Columna_3,
                 Columna_4,
@@ -205,5 +205,73 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             set_mensaje("Error al modificar registro.");
             return false;
         }
+    }
+
+    public void ResetTable()
+    {
+        try
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("drop table if exists " + Nombre_Tabla);
+            db.execSQL("create table "+ Nombre_Tabla +
+                    "(" + Columna_1 + " integer primary key autoincrement not null," +
+                    Columna_2 +" TEXT not null," +
+                    Columna_3 + " TEXT not null," +
+                    Columna_4 + " TEXT not null," +
+                    Columna_5 + " integer not null)");
+        }
+        catch (Exception ex)
+        {
+            set_mensaje(ex.getMessage());
+        }
+    }
+
+    public String UltimoCodigoIngresado()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+// Definir que columnas mostrar
+
+        String[] projection = {
+                Columna_1,
+                Columna_4
+        };
+
+
+// Sort
+        String sortOrden =
+                Columna_1 + " DESC";
+//Cursor
+        Cursor cursor = db.query(
+                Nombre_Tabla,           // Nombre tabla
+                projection,             // Columnas a traer
+                null,          // no clausula where
+                null,       // no valor de where
+                null,          // no agrupar las filas
+                null,            // no filtrar por grupo de filas
+                sortOrden               // sort
+        );
+        if(cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            String resultado = cursor.getString(1);
+            return resultado;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    public int CantidadTotalDeRegistros()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int cantidad = 0;
+        Cursor c = db.rawQuery("select sum("+Columna_5+") from "+Nombre_Tabla+";", null);
+        if(c.moveToFirst())
+        {
+            cantidad = c.getInt(0);
+        }
+        return cantidad;
     }
 }
