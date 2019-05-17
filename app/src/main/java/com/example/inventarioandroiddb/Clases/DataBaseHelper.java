@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final int BaseDatos_Version = 1;
     public static final String Nombre_BaseDatos = "Inventario.db";
+    // Tabla Inventario
     public static final String Nombre_Tabla = "tbl_inventario";
     public static final String Columna_1 = "ID";
     public static final String Columna_2 = "USUARIO";
     public static final String Columna_3 = "UBICACION";
     public static final String Columna_4 = "CODIGO";
     public static final String Columna_5 = "CANTIDAD";
+
+    //Tabla Maestro
+    public static final String Nombre_Tabla_2 = "tbl_maestro";
+    public static final String Columna_2_1 = "CODIGO";
+    public static final String Columna_2_2 = "DESCRIPCION";
 
     public String get_mensaje() {
         return _mensaje;
@@ -42,11 +49,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Columna_3 + " TEXT not null," +
                 Columna_4 + " TEXT not null," +
                 Columna_5 + " integer not null)");
+        db.execSQL("create table "+ Nombre_Tabla_2 +
+                "(" + Columna_2_1 + " TEXT primary key not null," +
+                Columna_2_2 + " TEXT not null)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists " + Nombre_Tabla);
+        db.execSQL("drop table if exists " + Nombre_Tabla_2);
         onCreate(db);
     }
 
@@ -62,6 +73,67 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             content.put(Columna_4,codigo);
             content.put(Columna_5,cantidad);
             long insert = db.insert(Nombre_Tabla,null,content);
+            if(insert !=-1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        catch (SQLException e)
+        {
+            e.fillInStackTrace();
+            set_mensaje(e.getMessage());
+            return false;
+        }
+
+    }
+    public void InsertarDataMasivoMaestro(String [] archivo)
+    {
+        try
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            SQLiteStatement stmt = db.compileStatement(
+                    "INSERT INTO "+ Nombre_Tabla_2 +"("+Columna_2_1+","+Columna_2_2+") VALUES (?,?)"
+            );
+
+            db.beginTransaction();
+            Object[] values = new Object[2];
+            for(int index= 0; index < archivo.length;index++)
+            {
+                String [] arraylinea = archivo[index].split(",");
+
+                stmt.bindString(1,arraylinea[0].trim());
+                stmt.bindString(2,arraylinea[1].trim());
+                stmt.executeInsert();
+                stmt.clearBindings();
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+
+        }
+        catch (SQLException e)
+        {
+            e.fillInStackTrace();
+            set_mensaje(e.getMessage());
+        }
+
+    }
+
+    public boolean InsertarDataMaestro(String codigo, String descripcion)
+    {
+        try
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues content = new ContentValues();
+            content.put(Columna_2_1,codigo);
+            content.put(Columna_2_2,descripcion);
+
+            long insert = db.insert(Nombre_Tabla_2,null,content);
             if(insert !=-1)
             {
                 return true;
@@ -102,6 +174,45 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //Cursor
         Cursor cursor = db.query(
                 Nombre_Tabla,           // Nombre tabla
+                projection,             // Columnas a traer
+                null,          // no clausula where
+                null,       // no valor de where
+                null,          // no agrupar las filas
+                null,            // no filtrar por grupo de filas
+                sortOrden               // sort
+        );
+/*
+        List itemIds = new ArrayList<>();
+        while(cursor.moveToNext()) {
+            long itemId = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(Columna_1)
+            );
+            itemIds.add(itemId);
+        }
+        cursor.close();
+*/
+
+        return cursor;
+    }
+
+    public Cursor ListaMaestro()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+// Definir que columnas mostrar
+
+        String[] projection = {
+                "CODIGO _id",
+                Columna_2_2,
+        };
+
+
+// Sort
+        String sortOrden =
+                Columna_2_1 + " DESC";
+//Cursor
+        Cursor cursor = db.query(
+                Nombre_Tabla_2,           // Nombre tabla
                 projection,             // Columnas a traer
                 null,          // no clausula where
                 null,       // no valor de where
@@ -219,6 +330,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     Columna_3 + " TEXT not null," +
                     Columna_4 + " TEXT not null," +
                     Columna_5 + " integer not null)");
+        }
+        catch (Exception ex)
+        {
+            set_mensaje(ex.getMessage());
+        }
+    }
+
+    public void ResetMaestro()
+    {
+        try
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("drop table if exists " + Nombre_Tabla_2);
+            db.execSQL("create table "+ Nombre_Tabla_2 +
+                    "(" + Columna_2_1 + " TEXT primary key not null," +
+                    Columna_2_2 + " TEXT not null)");
         }
         catch (Exception ex)
         {

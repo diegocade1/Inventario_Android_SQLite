@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF">
+
+        <TextView
+            android:id="@+id/lblCodigoValidacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Codigo"
+            android:textSize="40dp"
+            android:layout_centerHorizontal="true"/>
+        <Button
+            android:id="@+id/btnTipoCodigoValidacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:text="Cod/Cod"
+            android:layout_toRightOf="@id/lblCodigoValidacion" />
+
+        <EditText
+            android:id="@+id/txtCodigoValidacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lblCodigoValidacion"
+            android:layout_centerHorizontal="true"/>
+
+        <RelativeLayout
+            android:id="@+id/llSecondValidacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtCodigoValidacion"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblTituloCantidadValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cant:"
+                android:textSize="20dp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/txtCantidadValidacion"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:layout_toEndOf="@id/lblTituloCantidadValidacion"
+                android:inputType="number" />
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/llThirdValidacion"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txtCodigoValidacion"
+            android:orientation="vertical"
+            android:paddingTop="60dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:id="@+id/lblUltimoCodigoValidacion"
+                android:layout_gravity="left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ultimo Codigo:"
+                android:textSize="20dp"
+                android:paddingBottom="20dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/lblCantidadValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantidad:"
+                android:textSize="20dp"
+                android:paddingBottom="20dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/lblUsuarioValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usuario:"
+                android:textSize="20dp"
+                android:paddingBottom="20dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/lblUbicacionValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicacion:"
+                android:textSize="20dp"
+                android:paddingBottom="20dp"
+                android:textStyle="bold"/>
+            <Button
+                android:id="@+id/btnRegresarValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_weight="1"
+                android:text="Regresar"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llForthValidacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtCodigoValidacion"
+            android:layout_toRightOf="@+id/llThirdValidacion"
+            android:gravity="center_horizontal|left"
+            android:orientation="vertical"
+            android:paddingTop="60dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:id="@+id/lblTextUltimoCodigoValidacion"
+                android:layout_weight="10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ultimo Codigo"
+                android:textSize="20dp"
+                android:paddingBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/lblTextCantidadValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:text="Cantidad"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/lblTextUsuarioValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:text="Usuario"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/lblTextUbicacionValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                android:text="Ubicacion"
+                android:textSize="20dp" />
+            <Button
+                android:id="@+id/btnListaValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_weight="1"
+                android:text="Lista"
+                android:visibility="visible"/>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

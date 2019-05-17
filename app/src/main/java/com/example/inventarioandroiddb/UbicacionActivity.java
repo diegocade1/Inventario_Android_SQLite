@@ -17,12 +17,12 @@ public class UbicacionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ubicacion);
-
+        Boolean validacion = (Boolean) getIntent().getSerializableExtra("validacion");
 //-------------------Botones--------------------------------------------------------
         Button btnAceptar =findViewById(R.id.btnAceptarUbicacion);
         Button btnCancelar =findViewById(R.id.btnCancelarUbicacion);
 //-------------------Accion Botones-------------------------------------------------
-        ActionBtnAceptar(btnAceptar);
+        ActionBtnAceptar(btnAceptar,validacion);
         ActionBtnCancelar(btnCancelar);
 //----------------------------------------------------------------------------------
         //String usuario = getIntent().getSerializableExtra("usuario").toString();
@@ -35,7 +35,7 @@ public class UbicacionActivity extends AppCompatActivity {
         ActionKeyPressTextUbicacion(txtUbicacion);
     }
 
-    private void ActionBtnAceptar(Button boton)
+    private void ActionBtnAceptar(Button boton,final Boolean validacion)
     {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,11 +45,22 @@ public class UbicacionActivity extends AppCompatActivity {
                 String ubicacion = txt.getText().toString();
                 if(!ubicacion.trim().equals(""))
                 {
-                    String usuario = (String)getIntent().getSerializableExtra("usuario");
-                    startActivity(new Intent(UbicacionActivity.this,CodigoActivity.class)
-                            .putExtra("usuario",usuario)
-                            .putExtra("ubicacion",ubicacion));
-                    esconderKeyboard();
+                    if(!validacion)
+                    {
+                        String usuario = (String)getIntent().getSerializableExtra("usuario");
+                        startActivity(new Intent(UbicacionActivity.this,CodigoActivity.class)
+                                .putExtra("usuario",usuario)
+                                .putExtra("ubicacion",ubicacion));
+                        //esconderKeyboard();
+                    }
+                    else
+                    {
+                        String usuario = (String)getIntent().getSerializableExtra("usuario");
+                        startActivity(new Intent(UbicacionActivity.this,CodigoConValidacionActivity.class)
+                                .putExtra("usuario",usuario)
+                                .putExtra("ubicacion",ubicacion));
+                    }
+
                 }
                 else
                 {

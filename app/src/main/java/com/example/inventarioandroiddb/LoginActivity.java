@@ -16,11 +16,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Boolean validacion = (Boolean) getIntent().getSerializableExtra("validacion");
 //-------------------Botones-----------------------------------
         Button btnAceptar =findViewById(R.id.btnAceptarUsuario);
         Button btnCancelar =findViewById(R.id.btnCancelarUsuario);
 //-------------------Accion Botones----------------------------
-        ActionBtnAceptar(btnAceptar);
+        ActionBtnAceptar(btnAceptar,validacion);
         ActionBtnCancelar(btnCancelar);
 //-------------------Edit Text----------------------------------
         EditText txtUsuario = findViewById(R.id.txtUsuario);
@@ -28,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         ActionKeyPressTextUsuario(txtUsuario);
     }
 
-    private void ActionBtnAceptar(Button boton)
+    private void ActionBtnAceptar(Button boton, final Boolean validacion)
     {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,8 +40,8 @@ public class LoginActivity extends AppCompatActivity {
                 if(!usuario.trim().equals(""))
                 {
                     startActivity(new Intent(LoginActivity.this,UbicacionActivity.class)
-                            .putExtra("usuario",usuario));
-                    esconderKeyboard();
+                            .putExtra("usuario",usuario).putExtra("validacion",validacion));
+                    //esconderKeyboard();
                 }
                 else
                 {

@@ -1,9 +1,7 @@
 package com.example.inventarioandroiddb;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.SQLException;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,43 +15,40 @@ import android.widget.Toast;
 
 import com.example.inventarioandroiddb.Clases.DataBaseHelper;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-public class CodigoActivity extends AppCompatActivity {
+public class CodigoConValidacionActivity extends AppCompatActivity {
 
     private int cantidad = 0;
     private String code = "";
     DataBaseHelper myDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_codigo);
+        setContentView(R.layout.activity_codigo_con_validacion);
         myDB = new DataBaseHelper(getApplicationContext());
         esconderKeyboard();
 //-------------------Botones-----------------------------------
-        Button btnCod =findViewById(R.id.btnTipoCodigo);
-        Button btnRegresar = findViewById(R.id.btnRegresar);
-        Button btnLista = findViewById(R.id.btnLista);
+        Button btnCod =findViewById(R.id.btnTipoCodigoValidacion);
+        Button btnRegresar = findViewById(R.id.btnRegresarValidacion);
+        Button btnLista = findViewById(R.id.btnListaValidacion);
 //-------------------Accion Botones----------------------------
         ActionBtnCod(btnCod);
         ActionBtnRegresar(btnRegresar);
         ActionBtnListar(btnLista);
 //----------------------------------------------------------------------------
-        TextView lblUsuario = findViewById(R.id.lblTextUsuario);
+        TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
         String usuario = (String)getIntent().getSerializableExtra("usuario");
         lblUsuario.setText(usuario);
 
-        TextView lblUbicacion = findViewById(R.id.lblTextUbicacion);
+        TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
         String ubicacion = (String)getIntent().getSerializableExtra("ubicacion");
         lblUbicacion.setText(ubicacion);
 
-        TextView lblCantidad = findViewById(R.id.lblTextCantidad);
+        TextView lblCantidad = findViewById(R.id.lblTextCantidadValidacion);
         lblCantidad.setText(Integer.toString(myDB.CantidadTotalDeRegistros()));
         cantidad = myDB.CantidadTotalDeRegistros();
 
-        TextView lblCodigo = findViewById(R.id.lblTextUltimoCodigo);
+        TextView lblCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
         String ultimocodigo = myDB.UltimoCodigoIngresado();
         if(ultimocodigo!="")
         {
@@ -65,10 +60,10 @@ public class CodigoActivity extends AppCompatActivity {
         }
 
 //-----------------------------------------------------------------
-        EditText text = findViewById(R.id.txtCodigo);
+        EditText text = findViewById(R.id.txtCodigoValidacion);
         ActionKeyPressTextCodigo(text);
 
-        EditText textCant = findViewById(R.id.txtCantidad);
+        EditText textCant = findViewById(R.id.txtCantidadValidacion);
         ActionKeyPressTextCantidad(textCant);
     }
 
@@ -81,16 +76,16 @@ public class CodigoActivity extends AppCompatActivity {
                 if(!texto.toUpperCase().equals("COD/COD"))
                 {
                     boton.setText("COD/COD");
-                    TextView view = findViewById(R.id.lblTituloCantidad);
-                    EditText cant = findViewById(R.id.txtCantidad);
+                    TextView view = findViewById(R.id.lblTituloCantidadValidacion);
+                    EditText cant = findViewById(R.id.txtCantidadValidacion);
                     view.setVisibility(View.GONE);
                     cant.setVisibility(View.GONE);
                 }
                 else
                 {
                     boton.setText("COD/CANT");
-                    TextView view = findViewById(R.id.lblTituloCantidad);
-                    EditText cant = findViewById(R.id.txtCantidad);
+                    TextView view = findViewById(R.id.lblTituloCantidadValidacion);
+                    EditText cant = findViewById(R.id.txtCantidadValidacion);
                     view.setVisibility(View.VISIBLE);
                     cant.setVisibility(View.VISIBLE);
                 }
@@ -105,14 +100,14 @@ public class CodigoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-            try{
-                startActivityForResult(new Intent(CodigoActivity.this, ListaActivity.class),1);
+                try{
+                    startActivityForResult(new Intent(CodigoConValidacionActivity.this, ListaActivity.class),1);
 
-            }
-            catch (Exception ex)
-            {
-                ShowMensage("Error",ex.getMessage().toString());
-            }
+                }
+                catch (Exception ex)
+                {
+                    ShowMensage("Error",ex.getMessage().toString());
+                }
             }
         });
     }
@@ -124,19 +119,19 @@ public class CodigoActivity extends AppCompatActivity {
             public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
 
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    EditText text = findViewById(R.id.txtCodigo);
+                    EditText text = findViewById(R.id.txtCodigoValidacion);
 
                     if(!text.getText().toString().trim().equals(""))
                     {
-                        Button btnCod =findViewById(R.id.btnTipoCodigo);
+                        Button btnCod =findViewById(R.id.btnTipoCodigoValidacion);
                         String tipos = btnCod.getText().toString();
 
-                        TextView lblUsuario = findViewById(R.id.lblTextUsuario);
-                        TextView lblUbicacion = findViewById(R.id.lblTextUbicacion);
+                        TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
+                        TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
 
                         if(!tipos.toUpperCase().equals("COD/COD"))
                         {
-                            EditText cant = findViewById(R.id.txtCantidad);
+                            EditText cant = findViewById(R.id.txtCantidadValidacion);
                             cant.requestFocus();
                             return true;
                         }
@@ -170,16 +165,16 @@ public class CodigoActivity extends AppCompatActivity {
             public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
 
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    EditText cant = findViewById(R.id.txtCantidad);
+                    EditText cant = findViewById(R.id.txtCantidadValidacion);
 
                     if(!cant.getText().toString().trim().equals(""))
                     {
                         if(cant.getText().length()<=4)
                         {
-                            TextView lblUsuario = findViewById(R.id.lblTextUsuario);
-                            TextView lblUbicacion = findViewById(R.id.lblTextUbicacion);
+                            TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
+                            TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
 
-                            EditText text = findViewById(R.id.txtCodigo);
+                            EditText text = findViewById(R.id.txtCodigoValidacion);
 
                             COD_CANT(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString(),cant.getText().toString());
                             text.setText("");
@@ -209,7 +204,6 @@ public class CodigoActivity extends AppCompatActivity {
         return false;
     }
 
-
     private void COD_CANT(String usuario, String ubicacion, String codigo, String cant)
     {
 
@@ -227,10 +221,10 @@ public class CodigoActivity extends AppCompatActivity {
         }
 
 
-        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigo);
+        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
         txtCodigo.setText(code);
 
-        TextView txtCantidad = findViewById(R.id.lblTextCantidad);
+        TextView txtCantidad = findViewById(R.id.lblTextCantidadValidacion);
         txtCantidad.setText(Integer.toString(cantidad));
     }
 
@@ -253,10 +247,10 @@ public class CodigoActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
-        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigo);
+        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
         txtCodigo.setText(code);
 
-        TextView txtCantidad = findViewById(R.id.lblTextCantidad);
+        TextView txtCantidad = findViewById(R.id.lblTextCantidadValidacion);
         txtCantidad.setText(Integer.toString(cantidad));
 
     }
@@ -277,6 +271,26 @@ public class CodigoActivity extends AppCompatActivity {
         return padded;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        TextView lblCantidad = findViewById(R.id.lblTextCantidadValidacion);
+        lblCantidad.setText(Integer.toString(myDB.CantidadTotalDeRegistros()));
+        cantidad = myDB.CantidadTotalDeRegistros();
+
+        TextView lblCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
+        String ultimocodigo = myDB.UltimoCodigoIngresado();
+        if(ultimocodigo!="")
+        {
+            lblCodigo.setText(myDB.UltimoCodigoIngresado());
+        }
+        else
+        {
+            lblCodigo.setText("-");
+        }
+    }
+
     public void esconderKeyboard() {
         if(getCurrentFocus()!=null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -291,25 +305,5 @@ public class CodigoActivity extends AppCompatActivity {
         builder.setTitle(titulo);
         builder.setMessage(mensage);
         builder.show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        TextView lblCantidad = findViewById(R.id.lblTextCantidad);
-        lblCantidad.setText(Integer.toString(myDB.CantidadTotalDeRegistros()));
-        cantidad = myDB.CantidadTotalDeRegistros();
-
-        TextView lblCodigo = findViewById(R.id.lblTextUltimoCodigo);
-        String ultimocodigo = myDB.UltimoCodigoIngresado();
-        if(ultimocodigo!="")
-        {
-            lblCodigo.setText(myDB.UltimoCodigoIngresado());
-        }
-        else
-        {
-            lblCodigo.setText("-");
-        }
     }
 }

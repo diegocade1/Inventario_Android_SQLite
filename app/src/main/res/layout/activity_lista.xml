@@ -11,6 +11,13 @@
         android:textAlignment="textEnd"
         android:text="Registros en total: "
         android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/btnBorrarSeleccionados"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_action_delete_check_box" />
     <ListView
         android:id="@+id/lvLista"
         android:layout_width="match_parent"

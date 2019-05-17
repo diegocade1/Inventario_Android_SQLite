@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -22,19 +24,41 @@ import com.example.inventarioandroiddb.ModificarItemListaActivity;
 import com.example.inventarioandroiddb.R;
 import com.example.inventarioandroiddb.UbicacionActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CursorAdaptador extends CursorAdapter {
 
+    public List<Integer> selectedItemsPositions;
     private Context contexto;
     private Cursor cursorf;
     public CursorAdaptador(Context context, Cursor c) {
         super(context, c, 0);
         this.contexto = context;
+        selectedItemsPositions = new ArrayList<>();
         cursorf = c;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.activity_item_lista, parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_item_lista, parent, false);
+        CheckBox box = (CheckBox) view.findViewById(R.id.cbSelected);
+        box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int position = (int) compoundButton.getTag();
+                if (b) {
+                    //check whether its already selected or not
+                    if (!selectedItemsPositions.contains(position))
+                        selectedItemsPositions.add(position);
+                } else {
+                    //remove position if unchecked checked item
+                    selectedItemsPositions.remove((Object) position);
+                }
+            }
+        });
+        return view;
+        //return LayoutInflater.from(context).inflate(R.layout.activity_item_lista, parent,false);
     }
 
     @Override
@@ -59,7 +83,20 @@ public class CursorAdaptador extends CursorAdapter {
         tvUbicacion.setText("Ubicacion: "+ubicacion);
         tvCodigo.setText("Codigo: "+codigo);
         tvCantidad.setText("Cantidad: "+String.valueOf(cantidad));
-
+        //Checkbox
+        CheckBox box = (CheckBox) view.findViewById(R.id.cbSelected);
+        box.setTag(cursor.getPosition());
+        if(!selectedItemsPositions.isEmpty())
+        {
+            if (selectedItemsPositions.contains(cursor.getPosition()))
+            {
+                box.setChecked(true);
+            }
+            else
+            {
+                box.setChecked(false);
+            }
+        }
         //Button
         ImageView btnModificar = (ImageView) view.findViewById(R.id.btnModificarItem);
         ImageView btnEliminar = (ImageView) view.findViewById(R.id.btnEliminarItem);
