@@ -13,6 +13,28 @@ import java.util.List;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private String _mensaje;
+    public String get_mensaje()
+    {
+        return _mensaje;
+    }
+
+    public void set_mensaje(String _mensaje)
+    {
+
+        this._mensaje = _mensaje;
+    }
+
+    private String _descripcion;
+
+    public String get_descripcion()
+    {
+        return _descripcion;
+    }
+
+    public void set_descripcion(String _descripcion)
+    {
+        this._descripcion = _descripcion;
+    }
 
     public static final int BaseDatos_Version = 1;
     public static final String Nombre_BaseDatos = "Inventario.db";
@@ -28,14 +50,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String Nombre_Tabla_2 = "tbl_maestro";
     public static final String Columna_2_1 = "CODIGO";
     public static final String Columna_2_2 = "DESCRIPCION";
-
-    public String get_mensaje() {
-        return _mensaje;
-    }
-
-    public void set_mensaje(String _mensaje) {
-        this._mensaje = _mensaje;
-    }
 
     public DataBaseHelper(Context context) {
         super(context, Nombre_BaseDatos, null, BaseDatos_Version);
@@ -400,5 +414,39 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             cantidad = c.getInt(0);
         }
         return cantidad;
+    }
+
+    public String CodigoExiste(String codigo)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+// Definir que columnas mostrar
+
+        String[] projection = {
+                Columna_2_1,
+                Columna_2_2
+        };
+
+//Cursor
+        Cursor cursor = db.query(
+                Nombre_Tabla_2,           // Nombre tabla
+                projection,             // Columnas a traer
+                null,          // no clausula where
+                null,       // no valor de where
+                null,          // no agrupar las filas
+                null,            // no filtrar por grupo de filas
+                null               // sort
+        );
+        if(cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+/*            String code = cursor.getString(1);
+            String descripcion = cursor.getString(2);*/
+            return cursor.getString(2);
+        }
+        else
+        {
+            return "";
+        }
     }
 }

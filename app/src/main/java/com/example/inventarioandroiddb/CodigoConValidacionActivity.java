@@ -123,23 +123,32 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
 
                     if(!text.getText().toString().trim().equals(""))
                     {
-                        Button btnCod =findViewById(R.id.btnTipoCodigoValidacion);
-                        String tipos = btnCod.getText().toString();
-
-                        TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
-                        TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
-
-                        if(!tipos.toUpperCase().equals("COD/COD"))
+                        String descripcion = myDB.CodigoExiste(text.getText().toString().trim());
+                        if(!descripcion.equals(""))
                         {
-                            EditText cant = findViewById(R.id.txtCantidadValidacion);
-                            cant.requestFocus();
-                            return true;
+                            Button btnCod =findViewById(R.id.btnTipoCodigoValidacion);
+                            String tipos = btnCod.getText().toString();
+
+                            TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
+                            TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
+
+                            if(!tipos.toUpperCase().equals("COD/COD"))
+                            {
+                                EditText cant = findViewById(R.id.txtCantidadValidacion);
+                                cant.requestFocus();
+                                return true;
+                            }
+                            else
+                            {
+                                COD_COD(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString());
+                                text.setText("");
+                                text.requestFocus();
+                                return true;
+                            }
                         }
                         else
                         {
-                            COD_COD(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString());
-                            text.setText("");
-                            text.requestFocus();
+                            Toast.makeText(getApplicationContext(), "Codigo no corresponde", Toast.LENGTH_SHORT).show();
                             return true;
                         }
                     }

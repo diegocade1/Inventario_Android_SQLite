@@ -55,10 +55,26 @@
                 android:inputType="number" />
         </RelativeLayout>
         <LinearLayout
+            android:id="@+id/llDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llSecondValidacion"
+            android:gravity="center_horizontal|left"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <TextView
+                android:id="@+id/lblDescripcionValidacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Descripcion"
+                android:textSize="20dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/llThirdValidacion"
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:layout_below="@+id/txtCodigoValidacion"
+            android:layout_below="@+id/llDescripcion"
             android:orientation="vertical"
             android:paddingTop="60dp"
             android:paddingLeft="20dp"
@@ -110,11 +126,12 @@
                 android:visibility="gone"/>
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/llForthValidacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtCodigoValidacion"
+            android:layout_below="@+id/llDescripcion"
             android:layout_toRightOf="@+id/llThirdValidacion"
             android:gravity="center_horizontal|left"
             android:orientation="vertical"

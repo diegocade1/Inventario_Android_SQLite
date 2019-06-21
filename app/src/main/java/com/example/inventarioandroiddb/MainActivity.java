@@ -137,9 +137,10 @@ public class MainActivity extends AppCompatActivity {
                     progressDialog.show(); // Display Progress Dialog
                     progressDialog.setCancelable(false);
                     progressDialog.getProgress();
+
                 final Handler mHandler = new Handler();
 
-                    Thread mThread = new Thread() {
+                    final Thread mThread = new Thread() {
 
                         @Override
                         public void run() {
@@ -153,6 +154,11 @@ public class MainActivity extends AppCompatActivity {
                                     root.mkdirs();
                                 }
                                 File archivo = new File(root, fileName);
+                                if(!archivo.exists())
+                                {
+                                    Toast.makeText(getApplicationContext(), "No se encontro el archivo Maestro.txt", Toast.LENGTH_SHORT).show();
+
+                                }
                                 String linea;
 
                                 FileInputStream fIn = new FileInputStream(archivo);
@@ -177,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             catch (IOException | SQLException e)
                             {
-                                ShowMensage("Error",e.getMessage().toString());
+                                Toast.makeText(getApplicationContext(), "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     };
