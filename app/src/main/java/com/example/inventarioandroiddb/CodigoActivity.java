@@ -150,6 +150,7 @@ public class CodigoActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        text.requestFocus();
                         return true;
                     }
                 }
@@ -171,31 +172,40 @@ public class CodigoActivity extends AppCompatActivity {
 
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     EditText cant = findViewById(R.id.txtCantidad);
+                    EditText text = findViewById(R.id.txtCodigo);
 
-                    if(!cant.getText().toString().trim().equals(""))
+                    if(!text.getText().toString().trim().equals(""))
                     {
-                        if(cant.getText().length()<=4)
+                        if(!cant.getText().toString().trim().equals(""))
                         {
-                            TextView lblUsuario = findViewById(R.id.lblTextUsuario);
-                            TextView lblUbicacion = findViewById(R.id.lblTextUbicacion);
+                            if(cant.getText().length()<=4)
+                            {
+                                TextView lblUsuario = findViewById(R.id.lblTextUsuario);
+                                TextView lblUbicacion = findViewById(R.id.lblTextUbicacion);
 
-                            EditText text = findViewById(R.id.txtCodigo);
 
-                            COD_CANT(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString(),cant.getText().toString());
-                            text.setText("");
-                            cant.setText("");
-                            text.requestFocus();
-                            return true;
+                                COD_CANT(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString(),cant.getText().toString());
+                                text.setText("");
+                                cant.setText("");
+                                text.requestFocus();
+                                return true;
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Numeros de hasta 4 digitos permitidos", Toast.LENGTH_SHORT).show();
+                                cant.selectAll();
+                                return true;
+                            }
                         }
                         else
                         {
-                            Toast.makeText(getApplicationContext(), "Numeros de hasta 4 digitos permitidos", Toast.LENGTH_SHORT).show();
-                            cant.selectAll();
+                            cant.requestFocus();
                             return true;
                         }
                     }
                     else
                     {
+                        text.requestFocus();
                         return true;
                     }
                 }
@@ -218,7 +228,20 @@ public class CodigoActivity extends AppCompatActivity {
 
         try
         {
-            myDB.InsertarData(usuario,ubicacion,codigo,Integer.parseInt(cant));
+            Boolean correcto = myDB.InsertarData(usuario,ubicacion,codigo,Integer.parseInt(cant));
+
+            if(!correcto)
+            {
+                Toast.makeText(getApplicationContext(),myDB.get_mensaje(), Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigo);
+                txtCodigo.setText(code);
+
+                TextView txtCantidad = findViewById(R.id.lblTextCantidad);
+                txtCantidad.setText(Integer.toString(cantidad));
+            }
         }
         catch(SQLException e)
         {
@@ -246,18 +269,20 @@ public class CodigoActivity extends AppCompatActivity {
             {
                 Toast.makeText(getApplicationContext(),myDB.get_mensaje(), Toast.LENGTH_SHORT).show();
             }
+            else
+            {
+                TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigo);
+                txtCodigo.setText(code);
+
+                TextView txtCantidad = findViewById(R.id.lblTextCantidad);
+                txtCantidad.setText(Integer.toString(cantidad));
+            }
         }
         catch(SQLException e)
         {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigo);
-        txtCodigo.setText(code);
-
-        TextView txtCantidad = findViewById(R.id.lblTextCantidad);
-        txtCantidad.setText(Integer.toString(cantidad));
 
     }
 

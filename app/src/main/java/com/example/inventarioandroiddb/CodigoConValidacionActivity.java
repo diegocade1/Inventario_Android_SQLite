@@ -1,5 +1,6 @@
 package com.example.inventarioandroiddb;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.SQLException;
 import android.support.v7.app.AlertDialog;
@@ -15,17 +16,23 @@ import android.widget.Toast;
 
 import com.example.inventarioandroiddb.Clases.DataBaseHelper;
 
+import org.w3c.dom.Text;
+
 public class CodigoConValidacionActivity extends AppCompatActivity {
 
     private int cantidad = 0;
     private String code = "";
     DataBaseHelper myDB;
+    Context context;
+
+    TextView lblDescripcionValidacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_codigo_con_validacion);
         myDB = new DataBaseHelper(getApplicationContext());
+        context = this;
         esconderKeyboard();
 //-------------------Botones-----------------------------------
         Button btnCod =findViewById(R.id.btnTipoCodigoValidacion);
@@ -58,6 +65,9 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
         {
             lblCodigo.setText("-");
         }
+
+        lblDescripcionValidacion = findViewById(R.id.lblDescripcionValidacion);
+        lblDescripcionValidacion.setText("");
 
 //-----------------------------------------------------------------
         EditText text = findViewById(R.id.txtCodigoValidacion);
@@ -140,7 +150,7 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
                             }
                             else
                             {
-                                COD_COD(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString());
+                                COD_COD(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString(),descripcion);
                                 text.setText("");
                                 text.requestFocus();
                                 return true;
@@ -149,6 +159,8 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
                         else
                         {
                             Toast.makeText(getApplicationContext(), "Codigo no corresponde", Toast.LENGTH_SHORT).show();
+                            text.requestFocus();
+                            text.selectAll();
                             return true;
                         }
                     }
@@ -174,32 +186,51 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
             public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
 
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    EditText text = findViewById(R.id.txtCodigoValidacion);
                     EditText cant = findViewById(R.id.txtCantidadValidacion);
-
-                    if(!cant.getText().toString().trim().equals(""))
+                    if(!text.getText().toString().trim().equals(""))
                     {
-                        if(cant.getText().length()<=4)
+                        String descripcion = myDB.CodigoExiste(text.getText().toString().trim());
+                        if(!descripcion.equals(""))
                         {
-                            TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
-                            TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
+                            if(!cant.getText().toString().trim().equals(""))
+                            {
+                                if(cant.getText().length()<=4)
+                                {
+                                    TextView lblUsuario = findViewById(R.id.lblTextUsuarioValidacion);
+                                    TextView lblUbicacion = findViewById(R.id.lblTextUbicacionValidacion);
 
-                            EditText text = findViewById(R.id.txtCodigoValidacion);
 
-                            COD_CANT(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString(),cant.getText().toString());
-                            text.setText("");
-                            cant.setText("");
-                            text.requestFocus();
-                            return true;
+                                    COD_CANT(lblUsuario.getText().toString(),lblUbicacion.getText().toString(),text.getText().toString(),cant.getText().toString(),descripcion);
+                                    text.setText("");
+                                    cant.setText("");
+                                    text.requestFocus();
+                                    return true;
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Numeros de hasta 4 digitos permitidos", Toast.LENGTH_SHORT).show();
+                                    cant.selectAll();
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                cant.requestFocus();
+                                return true;
+                            }
                         }
                         else
                         {
-                            Toast.makeText(getApplicationContext(), "Numeros de hasta 4 digitos permitidos", Toast.LENGTH_SHORT).show();
-                            cant.selectAll();
+                            Toast.makeText(getApplicationContext(), "Codigo no corresponde", Toast.LENGTH_SHORT).show();
+                            text.requestFocus();
+                            text.selectAll();
                             return true;
                         }
                     }
                     else
                     {
+                        text.requestFocus();
                         return true;
                     }
                 }
@@ -213,7 +244,7 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
         return false;
     }
 
-    private void COD_CANT(String usuario, String ubicacion, String codigo, String cant)
+    private void COD_CANT(String usuario, String ubicacion, String codigo, String cant, String descripcion)
     {
 
         cantidad += Integer.parseInt(cant);
@@ -221,7 +252,22 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
 
         try
         {
-            myDB.InsertarData(usuario,ubicacion,codigo,Integer.parseInt(cant));
+            Boolean correcto =  myDB.InsertarData(usuario,ubicacion,codigo,Integer.parseInt(cant));
+
+            if(!correcto)
+            {
+                Toast.makeText(getApplicationContext(),myDB.get_mensaje(), Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                lblDescripcionValidacion.setText(descripcion);
+
+                TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
+                txtCodigo.setText(code);
+
+                TextView txtCantidad = findViewById(R.id.lblTextCantidadValidacion);
+                txtCantidad.setText(Integer.toString(cantidad));
+            }
         }
         catch(SQLException e)
         {
@@ -229,15 +275,9 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), e.getMessage().toString(), Toast.LENGTH_SHORT).show();
         }
 
-
-        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
-        txtCodigo.setText(code);
-
-        TextView txtCantidad = findViewById(R.id.lblTextCantidadValidacion);
-        txtCantidad.setText(Integer.toString(cantidad));
     }
 
-    private void COD_COD(String usuario, String ubicacion, String codigo)
+    private void COD_COD(String usuario, String ubicacion, String codigo,String descripcion)
     {
         cantidad += 1;
         code = codigo;
@@ -249,18 +289,22 @@ public class CodigoConValidacionActivity extends AppCompatActivity {
             {
                 Toast.makeText(getApplicationContext(),myDB.get_mensaje(), Toast.LENGTH_SHORT).show();
             }
+            else
+            {
+                lblDescripcionValidacion.setText(descripcion);
+
+                TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
+                txtCodigo.setText(code);
+
+                TextView txtCantidad = findViewById(R.id.lblTextCantidadValidacion);
+                txtCantidad.setText(Integer.toString(cantidad));
+            }
         }
         catch(SQLException e)
         {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-        TextView txtCodigo = findViewById(R.id.lblTextUltimoCodigoValidacion);
-        txtCodigo.setText(code);
-
-        TextView txtCantidad = findViewById(R.id.lblTextCantidadValidacion);
-        txtCantidad.setText(Integer.toString(cantidad));
 
     }
 

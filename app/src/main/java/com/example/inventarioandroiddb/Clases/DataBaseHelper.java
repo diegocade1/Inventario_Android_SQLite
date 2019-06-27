@@ -426,23 +426,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Columna_2_1,
                 Columna_2_2
         };
-
+// Filtro Where
+        String selection = Columna_2_1 + " = ?";
+        String[] selectionArgs = { codigo };
 //Cursor
         Cursor cursor = db.query(
                 Nombre_Tabla_2,           // Nombre tabla
                 projection,             // Columnas a traer
-                null,          // no clausula where
-                null,       // no valor de where
+                selection,          // no clausula where
+                selectionArgs,       // no valor de where
                 null,          // no agrupar las filas
                 null,            // no filtrar por grupo de filas
                 null               // sort
         );
-        if(cursor.getCount() > 0)
+        int cant = cursor.getCount();
+        if(cant > 0)
         {
             cursor.moveToFirst();
 /*            String code = cursor.getString(1);
             String descripcion = cursor.getString(2);*/
-            return cursor.getString(2);
+            return cursor.getString(1);
         }
         else
         {

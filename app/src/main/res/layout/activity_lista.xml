@@ -18,6 +18,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:src="@drawable/ic_action_delete_check_box" />
+    <TextView
+        android:id="@+id/tvVacio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vacio"
+        android:textSize="20sp"
+        android:visibility="gone"/>
     <ListView
         android:id="@+id/lvLista"
         android:layout_width="match_parent"

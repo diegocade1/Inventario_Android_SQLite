@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Inventario Android DB</string>
+    <string name="IP">192.168.1.135</string>
+    <string name="Port">100</string>
 </resources>

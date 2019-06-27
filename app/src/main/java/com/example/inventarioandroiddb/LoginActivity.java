@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 //-------------------Edit Text----------------------------------
         EditText txtUsuario = findViewById(R.id.txtUsuario);
 //------------------Acciones Text Edit------------------------------
-        ActionKeyPressTextUsuario(txtUsuario);
+        ActionKeyPressTextUsuario(txtUsuario,validacion);
     }
 
     private void ActionBtnAceptar(Button boton, final Boolean validacion)
@@ -40,14 +40,14 @@ public class LoginActivity extends AppCompatActivity {
                 if(!usuario.trim().equals(""))
                 {
                     startActivity(new Intent(LoginActivity.this,UbicacionActivity.class)
-                            .putExtra("usuario",usuario).putExtra("validacion",validacion));
+                            .putExtra("usuario",usuario).putExtra("validacion",validacion)
+                            .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
                     //esconderKeyboard();
                 }
                 else
                 {
                     Toast.makeText(getApplicationContext(), "Ingrese Usuario", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean ActionKeyPressTextUsuario(EditText text)
+    private boolean ActionKeyPressTextUsuario(EditText text, final Boolean validacion)
     {
         text.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -82,10 +82,9 @@ public class LoginActivity extends AppCompatActivity {
                     if(!usuario.trim().equals(""))
                     {
                         startActivity(new Intent(LoginActivity.this,UbicacionActivity.class)
-                                .putExtra("usuario",usuario)
+                                .putExtra("usuario",usuario).putExtra("validacion",validacion)
                                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
-
-                        esconderKeyboard();
+                        //esconderKeyboard();
                     }
                     else
                     {

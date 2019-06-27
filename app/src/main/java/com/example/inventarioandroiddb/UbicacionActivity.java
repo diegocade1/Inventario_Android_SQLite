@@ -32,7 +32,7 @@ public class UbicacionActivity extends AppCompatActivity {
 //-------------------Edit Text----------------------------------
         EditText txtUbicacion = findViewById(R.id.txtUbicacion);
 //------------------Acciones Text Edit------------------------------
-        ActionKeyPressTextUbicacion(txtUbicacion);
+        ActionKeyPressTextUbicacion(txtUbicacion,validacion);
     }
 
     private void ActionBtnAceptar(Button boton,final Boolean validacion)
@@ -50,7 +50,8 @@ public class UbicacionActivity extends AppCompatActivity {
                         String usuario = (String)getIntent().getSerializableExtra("usuario");
                         startActivity(new Intent(UbicacionActivity.this,CodigoActivity.class)
                                 .putExtra("usuario",usuario)
-                                .putExtra("ubicacion",ubicacion));
+                                .putExtra("ubicacion",ubicacion)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
                         //esconderKeyboard();
                     }
                     else
@@ -58,7 +59,8 @@ public class UbicacionActivity extends AppCompatActivity {
                         String usuario = (String)getIntent().getSerializableExtra("usuario");
                         startActivity(new Intent(UbicacionActivity.this,CodigoConValidacionActivity.class)
                                 .putExtra("usuario",usuario)
-                                .putExtra("ubicacion",ubicacion));
+                                .putExtra("ubicacion",ubicacion)
+                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
                     }
 
                 }
@@ -86,7 +88,7 @@ public class UbicacionActivity extends AppCompatActivity {
         }
     }
 
-    private boolean ActionKeyPressTextUbicacion(EditText text)
+    private boolean ActionKeyPressTextUbicacion(EditText text,final boolean validacion)
     {
         text.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -97,12 +99,24 @@ public class UbicacionActivity extends AppCompatActivity {
                     String ubicacion = txt.getText().toString();
                     if(!ubicacion.trim().equals(""))
                     {
-                        String usuario = (String)getIntent().getSerializableExtra("usuario");
-                        startActivity(new Intent(UbicacionActivity.this,CodigoActivity.class)
-                                .putExtra("usuario",usuario)
-                                .putExtra("ubicacion",ubicacion)
-                                .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
-                        esconderKeyboard();
+                        if(!validacion)
+                        {
+                            String usuario = (String)getIntent().getSerializableExtra("usuario");
+                            startActivity(new Intent(UbicacionActivity.this,CodigoActivity.class)
+                                    .putExtra("usuario",usuario)
+                                    .putExtra("ubicacion",ubicacion)
+                                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                            //esconderKeyboard();
+                        }
+                        else
+                        {
+                            String usuario = (String)getIntent().getSerializableExtra("usuario");
+                            startActivity(new Intent(UbicacionActivity.this,CodigoConValidacionActivity.class)
+                                    .putExtra("usuario",usuario)
+                                    .putExtra("ubicacion",ubicacion)
+                                    .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                        }
+
                     }
                     else
                     {

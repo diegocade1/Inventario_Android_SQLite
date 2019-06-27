@@ -31,9 +31,13 @@ import static java.util.Collections.EMPTY_LIST;
 public class ListaActivity extends AppCompatActivity {
 
     DataBaseHelper myDB;
+
     CursorAdaptador todoAdapter;
+
     ListView lvItems;
     Context contexto;
+    TextView tvVacio;
+    ImageButton btnEliminarLista;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +51,17 @@ public class ListaActivity extends AppCompatActivity {
 /*        TextView lblRegistrosCant = findViewById(R.id.lblCantidadRegistros);
         String texto = "Registros en total: " + Integer.toString(cur.getCount())+ "  ";
         lblRegistrosCant.setText(texto);*/
+        tvVacio = findViewById(R.id.tvVacio);
+        btnEliminarLista = (ImageButton) findViewById(R.id.btnBorrarSeleccionados);
 
-        ImageButton btnEliminar = (ImageButton) findViewById(R.id.btnBorrarSeleccionados);
-        ActionBtnEliminarSelected(btnEliminar);
+        if(cur.getCount()<=0)
+        {
+            tvVacio.setVisibility(View.VISIBLE);
+            btnEliminarLista.setVisibility(View.INVISIBLE);
+        }
+
+
+        ActionBtnEliminarSelected(btnEliminarLista);
 
             lvItems = (ListView) findViewById(R.id.lvLista);
 
@@ -73,6 +85,10 @@ public class ListaActivity extends AppCompatActivity {
                 {
                     final int tamaño = todoAdapter.selectedItemsPositions.size();
                     //
+                    if(tamaño<=0)
+                    {
+                        return;
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
 
                     builder.setTitle("Eliminacion");
