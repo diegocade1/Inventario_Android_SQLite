@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean ValidarPermisos() {
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M)
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
         {
             return true;
         }
