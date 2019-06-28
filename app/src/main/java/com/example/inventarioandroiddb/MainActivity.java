@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -16,33 +17,37 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.inventarioandroiddb.Clases.DataBaseHelper;
+import com.example.inventarioandroiddb.Clases.ZipHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Arrays;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.Manifest.permission.ACCESS_NETWORK_STATE;
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
     Context context;
@@ -62,11 +67,10 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         myDB = new DataBaseHelper(getApplicationContext());
         ValidarPermisos();
-        String IP = getString(R.string.IP);
-        int Port = TryParse(getString(R.string.Port));
+        CargarConfig();
 
-        this.IP = IP;
-        this.Port = Port;
+
+        //myDB.Insertar10000Registros();
 //-------------------Botones-----------------------------------
         Button btnInventario =findViewById(R.id.btnInventario);
         Button btnInventarioValidacion =findViewById(R.id.btnInventarioValidacion);
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnEnviar = findViewById(R.id.btnEnviar);
         Button btnBorrarTodo = findViewById(R.id.btnBorrarDatos);
         Button btnRecibir = findViewById(R.id.btnRecibir);
+        Button btnConfig = findViewById(R.id.btnConfig);
 //-------------------Accion Botones----------------------------
         ActionBtnInventario(btnInventario);
         ActionBtnSalir(btnSalir);
@@ -81,6 +86,62 @@ public class MainActivity extends AppCompatActivity {
         ActionBtnBorrarTodo(btnBorrarTodo);
         ActionBtnRecibir(btnRecibir);
         ActionBtnInventarioValidacion(btnInventarioValidacion);
+        ActionBtnConfig(btnConfig);
+    }
+
+    private void CargarConfig()
+    {
+        String fileName = "config.txt";
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("Socket_Adress", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Config");
+
+        if (!root.exists())
+        {
+            root.mkdirs();
+        }
+
+        File archivo = new File(root, fileName);
+
+
+        try
+        {
+            if(!archivo.exists())
+            {
+                //archivo.createNewFile();
+                FileOutputStream out = new FileOutputStream(archivo, false);
+                String data = "IP=192.168.1.135,\r\nPort=100";
+                byte[] contents = data.getBytes();
+                out.write(contents);
+                out.flush();
+                out.close();
+            }
+
+            BufferedReader br = new BufferedReader(new FileReader(archivo));
+            String line,line2="";
+
+            while ((line = br.readLine()) != null) {
+                line2+=line;
+            }
+            br.close();
+            if(!line2.equals(""))
+            {
+                String[] array = line2.split(",");
+                editor.putString("IP", array[0].split("=")[1]);
+                editor.putInt("Port", TryParse(array[1].split("=")[1]));
+                editor.commit();
+            }
+            else
+            {
+                Log.d("Advertencia","Archivo de configuracion en blanco, configurar IP y Port manualmente en Configuraciones");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private boolean ValidarPermisos() {
@@ -174,13 +235,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void ActionBtnConfig(Button boton)
+    {
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(MainActivity.this,ConfigActivity.class));
+            }
+        });
+    }
+
     private void ActionBtnInventarioValidacion(Button boton)
     {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(MainActivity.this,LoginActivity.class).putExtra("validacion",true));
+                if(myDB.ListaMaestro().getCount()>0)
+                {
+                    startActivity(new Intent(MainActivity.this,LoginActivity.class).putExtra("validacion",true));
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Debe cargar el archivo maestro primero.", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
     }
@@ -190,21 +271,47 @@ public class MainActivity extends AppCompatActivity {
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(myDB.Lista().getCount()!=0)
+                if(myDB.Lista().getCount()>0)
                 {
+                    progressDialog = new ProgressDialog(MainActivity.this);
+                    //progressDialog.setMax(1); // Progress Dialog Max Value
+                    progressDialog.setMessage("Cargando..."); // Setting Message
+                    progressDialog.setTitle("Maestro"); // Setting Title
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Horizontal
+                    progressDialog.show(); // Display Progress Dialog
+                    progressDialog.setCancelable(false);
+                    progressDialog.getProgress();
+
+
+                    SharedPreferences prefs = getSharedPreferences("Socket_Adress", MODE_PRIVATE);
+                    IP = prefs.getString("IP", "169.1.10.10");
+                    Port = prefs.getInt("Port", 0);
+
+
                     Cursor cursor = myDB.Lista();
-                    String fileName = "Datos" + ".txt";//like 2016_01_12.txt
+                    String fileName = "Maestro" + ".txt";//like 2016_01_12.txt
 
                     try
                     {
 
-                        File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario");
+                        File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Enviado");
                         //File root = new File(Environment.getExternalStorageDirectory(), "Notes");
                         if (!root.exists())
                         {
                             root.mkdirs();
                         }
                         File archivo = new File(root, fileName);
+                        if(archivo.exists())
+                        {
+                            if(archivo.delete())
+                            {
+                                Log.d("Archivo eliminado","Correctamente");
+                            }
+                            else
+                            {
+                                Log.d("Archivo eliminado","No se pudo borrar");
+                            }
+                        }
 
                         FileWriter writer = new FileWriter( archivo,true);
 
@@ -219,12 +326,18 @@ public class MainActivity extends AppCompatActivity {
                         writer.flush();
                         writer.close();
                         cursor.close();
+
+                        Thread_SendFile = new Thread(new Thread_SendFile());
+                        Thread_SendFile.start();
+
+
                         //myDB.ResetTable();
                         Toast.makeText(getApplicationContext(), "Archivo generado.", Toast.LENGTH_SHORT).show();
                     }
                     catch(IOException e)
                     {
                         ShowMensage("Error",e.getMessage().toString());
+                        progressDialog.dismiss();
                     }
                 }
                 else
@@ -249,6 +362,10 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.show(); // Display Progress Dialog
                 progressDialog.setCancelable(false);
                 progressDialog.getProgress();
+
+                SharedPreferences prefs = getSharedPreferences("Socket_Adress", MODE_PRIVATE);
+                IP = prefs.getString("IP", "169.1.10.10");
+                Port = prefs.getInt("Port", 0);
 
                 Thread_ReceiveFile = new Thread(new Thread_ReceiveFile());
                 Thread_ReceiveFile.start();
@@ -360,49 +477,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void unzip(String path, String zipname, String filename)
-    {
-        InputStream is;
-        ZipInputStream zis;
-        try
-        {
-            //String filename;
-            is = new FileInputStream(path + zipname);
-            zis = new ZipInputStream(new BufferedInputStream(is));
-            ZipEntry ze;
-            byte[] buffer = new byte[1024];
-            int count;
-
-            while ((ze = zis.getNextEntry()) != null)
-            {
-                //filename = ze.getName();
-
-                // Need to create directories if not exists, or
-                // it will generate an Exception...
-                if (ze.isDirectory()) {
-                    File fmd = new File(path + filename);
-                    fmd.mkdirs();
-                    continue;
-                }
-
-                FileOutputStream fout = new FileOutputStream(path + filename);
-
-                while ((count = zis.read(buffer)) != -1)
-                {
-                    fout.write(buffer, 0, count);
-                }
-
-                fout.close();
-                zis.closeEntry();
-            }
-
-            zis.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
 
     /*-----------------------------------------Threads---------------------------------------------------*/
 
@@ -417,14 +491,55 @@ public class MainActivity extends AppCompatActivity {
                 socket = new Socket();
                 SocketAddress direccion = new InetSocketAddress(IP, Port);
                 socket.connect(direccion,5*1000);
-                File file = new File(
-                        Environment.getExternalStorageDirectory(),
-                        "Maestro.txt");
 
-                byte[] bytes = new byte[(int) file.length()];
+                String fileName = "Maestro" + ".txt";//like 2016_01_12.txt
+                String zipName = "Maestro" + ".zip";
+                File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Enviado");
+
+                if (!root.exists())
+                {
+                    root.mkdirs();
+                }
+                File archivo = new File(root, fileName);
+                File archivo2 = new File(root, zipName);
+
+                ZipHelper.Zip(new String[]{ Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Enviado"+File.separator+
+                        "Maestro.txt"},Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Enviado"+File.separator+
+                        "Maestro.zip");
+
+                if(archivo2.exists())
+                {
+                    if(archivo.delete())
+                    {
+                        Log.d("Archivo eliminado","Correctamente");
+                        if(!archivo2.renameTo(archivo))
+                        {
+                            showMessageThread("Error:","No se pudo completar la operacion, error en la compresion del archivo.(0x03)");
+                            progressDialog.dismiss();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        Log.d("Archivo eliminado","No se pudo borrar");
+                        showMessageThread("Error:","No se pudo completar la operacion, error en la compresion del archivo.(0x02)");
+                        progressDialog.dismiss();
+                        return;
+                    }
+                }
+                else
+                {
+                    showMessageThread("Error:","No se pudo completar la operacion, error en la compresion del archivo.(0x01)");
+                    progressDialog.dismiss();
+                    return;
+                }
+
+
+
+                byte[] bytes = new byte[(int) archivo.length()];
                 BufferedInputStream bis;
 
-                bis = new BufferedInputStream(new FileInputStream(file));
+                bis = new BufferedInputStream(new FileInputStream(archivo));
                 bis.read(bytes, 0, bytes.length);
                 OutputStream os = socket.getOutputStream();
                 os.write(bytes, 0, bytes.length);
@@ -433,12 +548,14 @@ public class MainActivity extends AppCompatActivity {
                 socket.close();
 
                 final String sentMsg = "Archivo enviado a: " + socket.getInetAddress();
+                progressDialog.dismiss();
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(context, sentMsg, Toast.LENGTH_LONG).show();
                         Thread_SendFile.interrupt();
+
                     }
                 });
 
@@ -447,6 +564,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 e.printStackTrace();
                 showMessageThread("Error:",e.getMessage());
+                progressDialog.dismiss();
             }
         }
 
@@ -465,7 +583,12 @@ public class MainActivity extends AppCompatActivity {
                 SocketAddress direccion = new InetSocketAddress(IP, Port);
                 socket.connect(direccion,5*1000);
                 InputStream is = socket.getInputStream();
-                final File file = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario","Maestro.txt");
+                File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Recibido");
+                if (!root.exists())
+                {
+                    root.mkdirs();
+                }
+                final File file = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Recibido","Maestro.txt");
                 byte[] bytes = new byte[1024];
                 FileOutputStream fos = new FileOutputStream(file);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -498,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             String fileName = "Maestro" + ".txt";//like 2016_01_12.txt
                             String zipName = "Maestro" + ".zip";
-                            File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario");
+                            File root = new File(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Recibido");
                             //File root = new File(Environment.getExternalStorageDirectory(), "Notes");
                             if (!root.exists())
                             {
@@ -518,13 +641,26 @@ public class MainActivity extends AppCompatActivity {
                             boolean correcto = archivo.renameTo(archivo2);
                             if(correcto)
                             {
-                                unzip(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator, zipName,fileName);
+                                ZipHelper.UnZip(Environment.getExternalStorageDirectory()+File.separator+"Inventario"+File.separator+"Recibido"+File.separator, zipName,fileName);
+                                if(archivo2.exists())
+                                {
+                                    if(archivo2.delete())
+                                    {
+                                        Log.d("Archivo eliminado","Correctamente");
+                                    }
+                                    else
+                                    {
+                                        Log.d("Archivo eliminado","No se pudo borrar");
+                                    }
+                                }
                             }
                             else
                             {
-                                showMessageThread("Error:","No se descomprimir el archivo");
+                                showMessageThread("Error:","No se pudo descomprimir el archivo");
+                                progressDialog.dismiss();
                                 return;
                             }
+
 
                             FileInputStream fIn = new FileInputStream(archivo);
                             int byteLength;

@@ -105,6 +105,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
 
     }
+
+    public void Insertar10000Registros()
+    {
+        for(int index = 0;index<10000;index++)
+        {
+            InsertarData("1","1","1",1);
+        }
+    }
+
     public void InsertarDataMasivoMaestro(String [] archivo)
     {
         try

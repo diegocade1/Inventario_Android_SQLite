@@ -1,76 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlMain"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFF"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/lblMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Menu"
-        android:textSize="40dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"/>
-
-    <LinearLayout
+    android:layout_height="wrap_content">>
+    <RelativeLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/rlMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/lblMenu"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="-1dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:background="#FFF"
+        tools:context=".MainActivity">
 
-        <Button
-            android:id="@+id/btnInventario"
-            android:layout_width="300dp"
-            android:layout_marginTop="-10dp"
-            android:layout_height="70dp"
-            android:layout_marginBottom="10dp"
-            android:text="Inventario" />
+        <TextView
+            android:id="@+id/lblMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:textSize="40dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"/>
 
-        <Button
-            android:id="@+id/btnInventarioValidacion"
-            android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Inventario con Maestro" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/lblMenu"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="-1dp"
+            android:layout_marginBottom="0dp"
+            android:gravity="top|center"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <Button
-            android:id="@+id/btnEnviar"
-            android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Enviar" />
+            <Button
+                android:id="@+id/btnInventario"
+                android:layout_width="300dp"
+                android:layout_marginTop="-10dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="10dp"
+                android:text="Inventario" />
 
-        <Button
-            android:id="@+id/btnRecibir"
-            android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Recibir" />
-        <Button
-            android:id="@+id/btnBorrarDatos"
-            android:layout_width="300dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_height="70dp"
-            android:text="Borrar Datos" />
+            <Button
+                android:id="@+id/btnInventarioValidacion"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Inventario con Maestro" />
 
-        <Button
-            android:id="@+id/btnSalir"
-            android:layout_width="300dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="70dp"
-            android:text="Salir" />
-    </LinearLayout>
-</RelativeLayout>
+            <Button
+                android:id="@+id/btnEnviar"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Enviar" />
+
+            <Button
+                android:id="@+id/btnRecibir"
+                android:layout_width="300dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Recibir" />
+            <Button
+                android:id="@+id/btnBorrarDatos"
+                android:layout_width="300dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="60dp"
+                android:text="Borrar Datos" />
+            <Button
+                android:id="@+id/btnConfig"
+                android:layout_width="300dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="60dp"
+                android:text="Configuracion" />
+            <Button
+                android:id="@+id/btnSalir"
+                android:layout_width="300dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="60dp"
+                android:text="Salir" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

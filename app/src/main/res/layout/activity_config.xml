@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFF">
+
+        <TextView
+            android:id="@+id/lblTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Configuracion"
+            android:textSize="40sp"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/lblIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblTitulo"
+            android:text="IP"
+            android:textSize="30sp"
+            android:layout_alignParentLeft="true"/>
+        <EditText
+            android:id="@+id/txtIP"
+            android:layout_width="250dp"
+            android:layout_height="40sp"
+            android:layout_below="@id/lblIP"
+            android:background="@drawable/textbackground"
+            android:layout_alignParentLeft="true"
+            android:maxLength="15"/>
+        <TextView
+            android:id="@+id/lblPort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtIP"
+            android:text="Port"
+            android:textSize="30sp"
+            android:layout_alignParentLeft="true"/>
+        <EditText
+            android:id="@+id/txtPort"
+            android:layout_width="250dp"
+            android:layout_height="40sp"
+            android:layout_below="@id/lblPort"
+            android:background="@drawable/textbackground"
+            android:layout_alignParentLeft="true"
+            android:maxLength="6"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtPort"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="40dp">
+
+
+            <Button
+                android:id="@+id/btnAceptarConfig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Aceptar" />
+
+            <Button
+                android:id="@+id/btnCancelarConfig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:text="Regresar" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
